@@ -11,10 +11,13 @@ const server = createServer(app, {
   }
 });
 
+
 // Socket io
 const io = new Server(server);
 // let users_list = [];
 // let rooms = [];
+
+// io.set('origins', '*');
 
 let users_list = [];
 io.on('connection', (socket) => {
@@ -74,6 +77,17 @@ io.on('connection', (socket) => {
       for (let i = 0; i < users.length; i++) {
         // console.log(msg, i);
         io.to(users[i].id).emit('add_message', msg);
+      }
+    } 
+  });
+
+  socket.on('typing', msg => {
+    console.log(msg);
+    let users = users_list.filter(user => user.room === msg.room);
+    if (msg.message !== '') {
+      for (let i = 0; i < users.length; i++) {
+        // console.log(msg, i);
+        io.to(users[i].id).emit('typind_send', msg);
       }
     } 
   });
